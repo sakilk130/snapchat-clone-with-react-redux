@@ -23,14 +23,22 @@ function Chat({ id, profilePic, username, timestamp, imageUrl, read }: any) {
       history('/chats/view');
     }
   };
+
   return (
     <ChatContainer onClick={open}>
       <Avatar src={profilePic} className="avatar" />
       <ChatInfo>
         <h4>{username}</h4>
         <p>
-          Tap to view -
-          {moment(new Date(timestamp?.toDate()).toUTCString()).fromNow()}
+          {!read && 'Tap to view - '}
+          {moment(new Date(timestamp?.toDate()).toUTCString()).fromNow() ===
+          null ? (
+            <div>Loading</div>
+          ) : (
+            <div>
+              {moment(new Date(timestamp?.toDate()).toUTCString()).fromNow()}
+            </div>
+          )}
         </p>
       </ChatInfo>
 
