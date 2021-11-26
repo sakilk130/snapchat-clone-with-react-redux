@@ -13,7 +13,7 @@ const videoConstraints = {
 };
 
 function WebcamCapture() {
-  const webcamRef = useRef(null);
+  const webcamRef:any = useRef(null);
   const dispatch = useDispatch();
   const history = useNavigate();
 
@@ -26,6 +26,8 @@ function WebcamCapture() {
     );
     history('/preview');
   }, [webcamRef]);
+
+
   return (
     <Container>
       <Webcam
@@ -35,6 +37,7 @@ function WebcamCapture() {
         screenshotFormat="image/jpeg"
         width={videoConstraints.width}
         videoConstraints={videoConstraints}
+        mirrored={true}
       />
       <RadioButtonUnchecked onClick={capture} fontSize="large" />
     </Container>
