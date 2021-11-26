@@ -17,11 +17,13 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import db, { storage } from '../../firebase/config';
 import firebase from 'firebase';
+import { selectUser } from '../../features/appSlice';
 
 function Preview() {
   const image = useSelector(selectImage);
   const history = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     if (!image) {
@@ -52,9 +54,9 @@ function Preview() {
           .then((url) => {
             db.collection('posts').add({
               imageUrl: url,
-              username: 'sakil',
+              username: user?.username,
               read: false,
-              profilePic: 'S',
+              profilePic: user?.profilePic,
               timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             });
             history('/chats');

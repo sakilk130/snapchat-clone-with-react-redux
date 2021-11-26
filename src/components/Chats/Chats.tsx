@@ -3,12 +3,19 @@ import styled from 'styled-components';
 import { Avatar } from '@material-ui/core';
 import { ChatBubble, Search } from '@material-ui/icons';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import db from '../../firebase/config';
+import db, { auth } from '../../firebase/config';
 import Chat from './Chat/Chat';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser } from '../../features/appSlice';
+import Tooltip from '@material-ui/core/Tooltip';
+import { useNavigate } from 'react-router-dom';
+import { resetCameraImage } from '../../features/cameraSlice';
 
 function Chats() {
   const [posts, setPosts] = useState([]);
-  console.log(posts);
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const history = useNavigate();
 
   useEffect(() => {
     db.collection('posts')
@@ -23,11 +30,24 @@ function Chats() {
       );
   }, []);
 
-  const takeSnap = () => {};
+  const takeSnap = () => {
+    dispatch(resetCameraImage());
+    history('/');
+  };
   return (
     <ChatsContainer>
       <ChatsHeader>
-        <Avatar className="avatar" />
+        <Tooltip title="Logout">
+          <Avatar
+            className="avatar"
+            src={user?.profilePic}
+            onClick={() => {
+              auth.signOut();
+            }}
+          >
+            {user?.displayName}
+          </Avatar>
+        </Tooltip>
         <ChatsSearch>
           <Search className="search" />
           <input placeholder="friends" type="text" />
@@ -52,7 +72,11 @@ function Chats() {
           )
         )}
       </ChatPosts>
-      <RadioButtonUncheckedIcon onClick={takeSnap} fontSize="large" />
+      <RadioButtonUncheckedIcon
+        className="takeSnap"
+        onClick={takeSnap}
+        fontSize="large"
+      />
     </ChatsContainer>
   );
 }
@@ -61,6 +85,20 @@ const ChatsContainer = styled.div`
   position: relative;
   height: 400px;
   width: 250px;
+  & > .takeSnap {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    background-color: white;
+    border-radius: 200px;
+    color: gray;
+    font-size: 40px !important;
+  }
+  & > .takeSnap:hover {
+    opacity: 0.8;
+  }
 `;
 
 const ChatsHeader = styled.div`
@@ -72,6 +110,7 @@ const ChatsHeader = styled.div`
   & > .avatar {
     height: 25px !important;
     width: 25px !important;
+    cursor: pointer;
   }
   & > .chatIcon {
     color: white;

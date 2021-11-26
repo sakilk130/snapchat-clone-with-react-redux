@@ -36,14 +36,23 @@ function App() {
         {!user ? (
           <Login />
         ) : (
-          <AppBody>
-            <Routes>
-              <Route path="/chats/view" element={<ChatView />} />
-              <Route path="/preview" element={<Preview />} />
-              <Route path="/chats" element={<Chats />} />
-              <Route path="/" element={<WebcamCapture />} />
-            </Routes>
-          </AppBody>
+          <>
+            <img
+              className="app__logo"
+              src="https://scx2.b-cdn.net/gfx/news/2017/1-snapchat.jpg"
+              alt=""
+            />
+            <AppBody>
+              <BodyBackground>
+                <Routes>
+                  <Route path="/chats/view" element={<ChatView />} />
+                  <Route path="/preview" element={<Preview />} />
+                  <Route path="/chats" element={<Chats />} />
+                  <Route path="/" element={<WebcamCapture />} />
+                </Routes>
+              </BodyBackground>
+            </AppBody>
+          </>
         )}
       </Router>
     </AppContainer>
@@ -58,7 +67,24 @@ const AppContainer = styled.div`
   background-color: #fefc01;
   height: 100vh;
   overflow: hidden;
+
+  & > img {
+    object-fit: contain;
+    height: 100px;
+  }
 `;
-const AppBody = styled.div``;
+const AppBody = styled.div`
+  background: url('https://www.pngkey.com/png/full/859-8598072_picture-freeuse-library-silhouette-mobile-at-getdrwawings-cell.png')
+    no-repeat center;
+  background-size: contain;
+  height: 400px;
+  width: 250px;
+  padding: 74px;
+`;
+
+const BodyBackground = styled.div`
+  background-color: white;
+  height: 400px;
+`;
 
 export default App;
