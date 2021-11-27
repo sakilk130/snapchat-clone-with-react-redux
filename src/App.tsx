@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import WebcamCapture from './components/WebcamCapture/WebcamCapture';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -10,10 +10,12 @@ import { login, logout, selectUser } from './features/appSlice';
 import Login from './components/Login/Login';
 import { auth } from './firebase/config';
 import { useDispatch } from 'react-redux';
+import Loader from 'react-loader-spinner';
 
 function App() {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
+  const [loader, setLoader] = useState(true);
 
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
@@ -25,15 +27,22 @@ function App() {
             id: authUser.uid,
           })
         );
+        setLoader(false);
       } else {
         dispatch(logout());
+        setLoader(false);
       }
     });
   }, []);
+
   return (
     <AppContainer>
       <Router>
-        {!user ? (
+        {loader ? (
+          <Loading>
+            <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />
+          </Loading>
+        ) : !user ? (
           <Login />
         ) : (
           <>
@@ -85,6 +94,12 @@ const AppBody = styled.div`
 const BodyBackground = styled.div`
   background-color: white;
   height: 400px;
+`;
+
+const Loading = styled.div`
+  display: grid;
+  place-items: center;
+  height: 100vh;
 `;
 
 export default App;

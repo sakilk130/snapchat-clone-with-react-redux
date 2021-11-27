@@ -10,12 +10,14 @@ import { selectUser } from '../../features/appSlice';
 import Tooltip from '@material-ui/core/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import { resetCameraImage } from '../../features/cameraSlice';
+import Loader from '../ContentLoader/Loader';
 
 function Chats() {
   const [posts, setPosts] = useState([]);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const history = useNavigate();
+  const [loader, setLoader] = useState(true);
 
   useEffect(() => {
     db.collection('posts')
@@ -28,6 +30,9 @@ function Chats() {
           }))
         )
       );
+    setTimeout(() => {
+      setLoader(false);
+    }, 1000);
   }, []);
 
   const takeSnap = () => {
@@ -55,20 +60,27 @@ function Chats() {
         <ChatBubble className="chatIcon" />
       </ChatsHeader>
       <ChatPosts>
-        {posts.map(
-          ({
-            id,
-            data: { profilePic, username, timestamp, imageUrl, read },
-          }) => (
-            <Chat
-              key={id}
-              id={id}
-              username={username}
-              timestamp={timestamp}
-              imageUrl={imageUrl}
-              read={read}
-              profilePic={profilePic}
-            />
+        {loader ? (
+          <div className="loader">
+            <Loader />
+            <Loader />
+          </div>
+        ) : (
+          posts.map(
+            ({
+              id,
+              data: { profilePic, username, timestamp, imageUrl, read },
+            }) => (
+              <Chat
+                key={id}
+                id={id}
+                username={username}
+                timestamp={timestamp}
+                imageUrl={imageUrl}
+                read={read}
+                profilePic={profilePic}
+              />
+            )
           )
         )}
       </ChatPosts>
@@ -150,7 +162,10 @@ const ChatPosts = styled.div`
   border-top-right-radius: 10px;
   background-color: white;
   overflow: scroll;
-
+  & > .loader {
+    margin-top: 10px;
+    margin-left: 10px;
+  }
   &::-webkit-scrollbar {
     display: none;
   }
